@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard - DevConnect</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0f0f23; color:white; font-family:Arial, sans-serif; }
+    .container { max-width:800px; margin:40px auto; padding:20px; }
+    h2 { color:#e94560; margin-bottom:20px; }
+    .create-btn { display:inline-block; padding:10px 20px;
+                  background:#e94560; color:white; text-decoration:none;
+                  border-radius:5px; margin-bottom:30px; }
+    .post-card { background:#1a1a2e; padding:20px; margin-bottom:15px;
+                 border-radius:8px; border-left:4px solid #e94560; }
+    .post-title { font-size:1.2rem; margin-bottom:8px; }
+    .post-meta { color:#888; font-size:0.85rem; }
+    .post-actions { margin-top:10px; }
+    .post-actions a { margin-right:10px; color:#e94560; text-decoration:none; }
+    .welcome { color:#aaa; margin-bottom:20px; }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h2>Dashboard</h2>
+
+    <% if (user) { %>
+      <p class="welcome">Welcome, <strong><%= user.name %></strong>! 👋</p>
+    <% } else { %>
+      <p class="welcome">User not logged in 😅</p>
+    <% } %>
+
+    <a href="/create-post" class="create-btn">+ Nayi Post Likho</a>
+
+    <h3 style="margin-bottom:15px; color:#aaa;">Saari Posts:</h3>
+
+    <% if (!posts || posts.length === 0) { %>
+      <p style="color:#888;">Abhi koi post nahi hai. Pehli post likho!</p>
+    <% } %>
+
+    <% if (posts && posts.length > 0) { %>
+      <% posts.forEach(post => { %>
+        <div class="post-card">
+          <div class="post-title">
+            <a href="/posts/<%= post._id %>" 
+               style="color:white; text-decoration:none;">
+              <%= post.title %>
+            </a>
+          </div>
+
+          <div class="post-meta">
+            By <%= post.author ? post.author.name : 'Unknown' %> |
+            <%= new Date(post.createdAt).toLocaleDateString('en-IN') %>
+          </div>
+
+          <% if (user && post.author && user._id.toString() === post.author._id.toString()) { %>
+            <div class="post-actions">
+              <a href="/posts/<%= post._id %>">Read</a>
+              <a href="#" onclick="deletePost('<%= post._id %>')">Delete</a>
+            </div>
+          <% } %>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+  <script>
+    async function deletePost(id) {
+      if (!confirm('Post delete karna chahte ho?')) return;
+      const res = await fetch('/api/posts/' + id, { method: 'DELETE' });
+      if (res.ok) window.location.reload();
+    }
+  </script>
+</body>
+</html>

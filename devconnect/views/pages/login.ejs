@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login - DevConnect</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#0f0f23; color:white; font-family:Arial, sans-serif; }
+    .container { max-width:400px; margin:80px auto; padding:40px;
+                 background:#1a1a2e; border-radius:10px; }
+    h2 { text-align:center; color:#e94560; margin-bottom:30px; }
+    input { width:100%; padding:12px; margin-bottom:15px;
+            background:#16213e; border:1px solid #333;
+            border-radius:5px; color:white; font-size:14px; }
+    button { width:100%; padding:12px; background:#e94560;
+             color:white; border:none; border-radius:5px;
+             font-size:16px; cursor:pointer; }
+    .msg { text-align:center; margin-top:15px; color:#aaa; }
+    .msg a { color:#e94560; }
+    #message { text-align:center; padding:10px;
+               border-radius:5px; margin-bottom:15px; display:none; }
+  </style>
+</head>
+<body>
+  <nav style="background:#1a1a2e; padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
+  
+  <div style="color:#e94560; font-size:20px; font-weight:bold;">
+    DevConnect
+  </div>
+
+  <div>
+    
+  <a href="/login">Login</a>
+  <a href="/register">Register</a>
+
+
+
+
+
+  </div>
+
+</nav>
+
+  <div class="container">
+    <h2>Login</h2>
+    <div id="message"></div>
+
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="handleLogin()">Login Karo</button>
+
+    <p class="msg">Account nahi hai? <a href="/register">Register karo</a></p>
+  </div>
+
+  <script>
+    async function handleLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const msgDiv = document.getElementById('message');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          msgDiv.style.display = 'block';
+          msgDiv.style.background = '#0d3b2e';
+          msgDiv.style.color = '#4caf50';
+          msgDiv.textContent = '✅ ' + data.message;
+          setTimeout(() => window.location.href = '/dashboard', 1500);
+        } else {
+          msgDiv.style.display = 'block';
+          msgDiv.style.background = '#3b0d0d';
+          msgDiv.style.color = '#f44336';
+          msgDiv.textContent = '❌ ' + data.message;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<nav style="background:#1a1a2e; padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
+  
+  <div style="color:#e94560; font-size:20px; font-weight:bold;">
+    DevConnect
+  </div>
+
+  <div>
+    <% if (user) { %>
+  <span>👋 <%= user.name %></span>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/create-post">Create</a>
+<% } else { %>
+  <a href="/login">Login</a>
+  <a href="/register">Register</a>
+<% } %>
+
+
+
+
+  </div>
+
+</nav>
